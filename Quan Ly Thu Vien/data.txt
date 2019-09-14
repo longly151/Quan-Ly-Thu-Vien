@@ -1,6 +1,0 @@
-dut,sach1,vilagon,vilagon,2010,1;
-dut,sach1,vilagon,vilagon,2010,1;
-,1,2,3,1,1;
-1,2,3,2,31,1;
-,,,,2,1;
-123,abc,cde,v,2015,1;

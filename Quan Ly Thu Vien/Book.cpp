@@ -2,9 +2,17 @@
 using namespace std;
 
 /*--------------------------------------------------------------------------------------------------------------*/
+void Book::Color(int k) {
+	HANDLE hConsoleColor;
+	hConsoleColor = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsoleColor, k);
+}
+/*--------------------------------------------------------------------------------------------------------------*/
 
-bool checkID(string id) {
-	if (id == "0") return false;
+/*--------------------------------------------------------------------------------------------------------------*/
+
+bool checkID(unsigned int id) {
+	if (id == 0) return false;
 	return true;
 }
 bool checkName(string name) {
@@ -29,7 +37,7 @@ Book::Book(void) {
 }
 
 // Khoi tao tham so
-Book::Book(string input_id, string input_name, string input_author, string input_publisher, int input_year, bool input_status) {
+Book::Book(unsigned int input_id, string input_name, string input_author, string input_publisher, int input_year, bool input_status) {
 	id = input_id;
 	name = input_name;
 	author = input_author;
@@ -58,47 +66,61 @@ Book::~Book(void) {
 void Book::Input() {
 
 gtID:
+	Color(15);
 	cout << "Nhap ID: ";
-	getline(cin, id);
+	cin >> id;
+	Color(12);
 	if (!checkID(id)) {
-		cout << "ID sach chi duoc chua chu so va chu cai. Vui long nhap lai !";
+		cout << "ID sach chi duoc chua chu so va chu cai. Vui long nhap lai !\n";
 		goto gtID;
 	}
+	cin.ignore();
 gtName:
+	Color(15);
 	cout << "Nhap ten sach: ";
 	getline(cin, name);
+	Color(12);
 	if (!checkName(name)) {
-		cout << "Ten sach khong hop le. Vui long nhap lai !";
+		cout << "Ten sach khong hop le. Vui long nhap lai !\n";
 		goto gtName;
 	}
 gtAuthor:
+	Color(15);
 	cout << "Nhap ten tac gia: ";
 	getline(cin, author);
+	Color(12);
 	if (!checkName(author)) {
-		cout << "Ten tac gia khong hop le. Vui long nhap lai !";
+		cout << "Ten tac gia khong hop le. Vui long nhap lai !\n";
 		goto gtAuthor;
 	}
 gtPublisher:
+	Color(15);
 	cout << "Nhap ten nha xuat ban: ";
 	getline(cin, publisher);
+	Color(12);
 	if (!checkName(publisher)) {
-		cout << "Ten nha xuat ban khong hop le. Vui long nhap lai !";
+		cout << "Ten nha xuat ban khong hop le. Vui long nhap lai !\n";
 		goto gtPublisher;
 	}
 gtYear:
+	Color(15);
 	cout << "Nhap nam phat hanh: ";
 	cin >> year;
+	Color(12);
 	if (!checkYear(year)) {
-		cout << "Nam phat hanh khong hop le. Vui long nhap lai !";
+		cout << "Nam phat hanh khong hop le. Vui long nhap lai !\n";
 		goto gtYear;
 	}
 gtStatus:
+	Color(15);
 	cout << "Nhap tinh trang sach (Nhap 1 neu sach da duoc muon, 0 neu sach chua duoc muon): ";
 	cin >> status;
+	Color(12);
 	if (!checkStatus(status)) {
-		cout << "Tinh trang sach khong hop le. Vui long nhap lai !";
+		cout << "Tinh trang sach khong hop le. Vui long nhap lai !\n";
 		goto gtStatus;
 	}
+	Color(15);
 }
 
 void Book::Show() {
@@ -112,7 +134,7 @@ void Book::Show() {
 
 void Book::FileExport() {
 	ofstream fo;
-	fo.open("data.txt",ios::out|ios::app);
+	fo.open("./Database/data.txt",ios::out|ios::app);
 	fo << id << "," << name << "," << author << "," << publisher << "," << year << "," << status << ";" << endl;
 	fo.close();
 }
@@ -121,7 +143,7 @@ void Book::FileExport() {
 
 // Getter - Setter
 
-string Book::Getter_id() {
+unsigned int Book::Getter_id() {
 	return id;
 }
 string Book::Getter_name() {
@@ -140,7 +162,7 @@ int Book::Getter_status() {
 	return status;
 }
 
-void Book::Setter_id(string input_id) {
+void Book::Setter_id(unsigned int input_id) {
 	id = input_id;
 }
 void Book::Setter_name(string input_name) {

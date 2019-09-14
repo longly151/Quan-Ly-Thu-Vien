@@ -1,7 +1,7 @@
 #pragma once
 #include "Book.h"
 
-class Library
+class Library : public Book
 {
 private:
 	struct Node
@@ -17,13 +17,23 @@ private:
 	List l;
 public:
 	Library(void); // Ham khoi tao mac dinh
+	~Library(void); // Ham huy
 
+
+	Node* GetNode(unsigned int);
 	void Init();
-	void AddHead(Node*);
-	void AddTail(Node*);
-	Node* GetNode(Book);
+	void InsertFirst(Node*);
+	void InsertLast(Node*);
+	void InsertAfter(Node*, Node*);
+	Node* ObjectToNode(Book);
 	void Input();
 	void Show();
-	void Destroy();
 
+
+
+	void Insert();
+	
+
+
+	void Menu();
 };
