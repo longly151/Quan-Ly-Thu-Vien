@@ -1,15 +1,21 @@
 #include "Book.h"
 using namespace std;
 
-/*--------------------------------------------------------------------------------------------------------------*/
+/* DOI MAU CONSOLE ---------------------------------------------------------------------------------------------*/
+
 void Book::Color(int k) {
 	HANDLE hConsoleColor;
 	hConsoleColor = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsoleColor, k);
 }
-/*--------------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* VALIDATE INPUT ----------------------------------------------------------------------------------------------*/
 
 bool checkID(unsigned int id) {
 	if (id == 0) return false;
@@ -24,11 +30,17 @@ bool checkYear(int year) {
 	return true;
 }
 bool checkStatus(int status) {
-	if (status == 0) return false;
+	/*if (status == 0) return false;*/
 	return true;
 }
 
 /*--------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* KHOI TAO & GIAI PHONG CLASS ---------------------------------------------------------------------------------*/
 
 // Khoi tao mac dinh
 Book::Book(void) {
@@ -61,63 +73,69 @@ Book::~Book(void) {
 
 }
 
-// Method
+/*---------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* HAM XU LY ----------------------------------------------------------------------------------------------------*/
 
 void Book::Input() {
 
 gtID:
-	Color(15);
-	cout << "Nhap ID: ";
+	Color(11);
+	cout << " Nhap ID: ";
 	cin >> id;
 	Color(12);
 	if (!checkID(id)) {
-		cout << "ID sach chi duoc chua chu so va chu cai. Vui long nhap lai !\n";
+		cout << " ID sach chi duoc chua chu so. Vui long nhap lai !\n";
 		goto gtID;
 	}
 	cin.ignore();
 gtName:
-	Color(15);
-	cout << "Nhap ten sach: ";
+	Color(11);
+	cout << " Nhap ten sach: ";
 	getline(cin, name);
 	Color(12);
 	if (!checkName(name)) {
-		cout << "Ten sach khong hop le. Vui long nhap lai !\n";
+		cout << " Ten sach khong hop le. Vui long nhap lai !\n";
 		goto gtName;
 	}
 gtAuthor:
-	Color(15);
-	cout << "Nhap ten tac gia: ";
+	Color(11);
+	cout << " Nhap ten tac gia: ";
 	getline(cin, author);
 	Color(12);
 	if (!checkName(author)) {
-		cout << "Ten tac gia khong hop le. Vui long nhap lai !\n";
+		cout << " Ten tac gia khong hop le. Vui long nhap lai !\n";
 		goto gtAuthor;
 	}
 gtPublisher:
-	Color(15);
-	cout << "Nhap ten nha xuat ban: ";
+	Color(11);
+	cout << " Nhap ten nha xuat ban: ";
 	getline(cin, publisher);
 	Color(12);
 	if (!checkName(publisher)) {
-		cout << "Ten nha xuat ban khong hop le. Vui long nhap lai !\n";
+		cout << " Ten nha xuat ban khong hop le. Vui long nhap lai !\n";
 		goto gtPublisher;
 	}
 gtYear:
-	Color(15);
-	cout << "Nhap nam phat hanh: ";
+	Color(11);
+	cout << " Nhap nam phat hanh: ";
 	cin >> year;
 	Color(12);
 	if (!checkYear(year)) {
-		cout << "Nam phat hanh khong hop le. Vui long nhap lai !\n";
+		cout << " Nam phat hanh khong hop le. Vui long nhap lai !\n";
 		goto gtYear;
 	}
 gtStatus:
-	Color(15);
-	cout << "Nhap tinh trang sach (Nhap 1 neu sach da duoc muon, 0 neu sach chua duoc muon): ";
+	Color(11);
+	cout << " Nhap tinh trang sach (Nhap 1 neu sach da duoc muon, 0 neu sach chua duoc muon): ";
 	cin >> status;
 	Color(12);
 	if (!checkStatus(status)) {
-		cout << "Tinh trang sach khong hop le. Vui long nhap lai !\n";
+		cout << " Tinh trang sach khong hop le. Vui long nhap lai !\n";
 		goto gtStatus;
 	}
 	Color(15);
@@ -139,9 +157,13 @@ void Book::FileExport() {
 	fo.close();
 }
 
-/*--------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------------------------*/
 
-// Getter - Setter
+
+
+
+
+/* GETTER - SETTER ----------------------------------------------------------------------------------------------*/
 
 unsigned int Book::Getter_id() {
 	return id;
@@ -181,4 +203,4 @@ void Book::Setter_status(int input_status) {
 	status = input_status;
 }
 
-/*--------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------------------------*/

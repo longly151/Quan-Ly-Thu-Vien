@@ -1,7 +1,7 @@
 #include "Library.h"
 
 
-/*--------------------------------------------------------------------------------------------------------------*/
+/* IMPORT DU LIEU TU FILE ---------------------------------------------------------------------------------*/
 
 // Ham doc du lieu file => string => luu vao bien data
 void FileImport(string &data) {
@@ -18,6 +18,7 @@ void FileImport(string &data) {
 
 // Ham tach du lieu tu data
 Book Extract(string data, int index) {
+
 	// Tach 1 thong tin sach => string => luu vao bien bookStr
 	int countMatch = 0;
 	int start = 0;
@@ -33,6 +34,7 @@ Book Extract(string data, int index) {
 	}
 	int len = end - start;
 	string bookStr = data.substr(start, len);
+
 	// Tach 1 thong tin sach tu bien bookStr => Book
 	Book book;
 	end = 0;
@@ -88,20 +90,13 @@ int BookCount(string data) {
 	return count;
 }
 
+/*----------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------------------------------------------------------------------*/
-Library::Node* Library::GetNode(unsigned int id)
-{
-	int i = 0;
-	for (Node* p = l.pHead; p != NULL; p = p->pNext)
-	{
-		if (i == id) return p;
-		i++;
-	}
-	return 0;
-}
 
-/*--------------------------------------------------------------------------------------------------------------*/
+
+
+
+/* DANH SACH LIEN KET --------------------------------------------------------------------------------------*/
 
 // Ham khoi tao danh sach lien ket don
 void Library::Init() {
@@ -142,12 +137,12 @@ void Library::InsertAfter(Node* p, Node* q) {
 }
 
 // Dua du lieu vao Node
-Library::Node* Library::ObjectToNode(Book book) {
+Library::Node* Library::ObjectToNode(Book x) {
 	Node* p = new Node;
 	if (p == NULL) {
 		return NULL;
 	}
-	p->Data = book; // Luu x vao data
+	p->Data = x; // Luu x vao data
 	p->pNext = NULL; // Khoi tao moi lien ket
 	return p;
 }
@@ -170,7 +165,23 @@ void Library::Show() {
 	}
 }
 
-/*--------------------------------------------------------------------------------------------------------------*/
+// Ham lay Node theo ID
+Library::Node* Library::GetNode(unsigned int id)
+{
+	for (Node* p = l.pHead; p != NULL; p = p->pNext)
+	{
+		if (p->Data.Getter_id() == id) return p;
+	}
+	return 0;
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* KHOI TAO & GIAI PHONG CLASS -------------------------------------------------------------------------------*/
 
 // Ham khoi tao thu vien & tao danh sach da duoc nhap du lieu tu file
 Library::Library(void) {
@@ -198,67 +209,174 @@ Library::~Library(void) {
 	}
 }
 
+/*------------------------------------------------------------------------------------------------------------*/
 
 
 
-/*--------------------------------------------------------------------------------------------------------------*/
-// SubMenu
 
-// Insert(4)
-void Library::Insert() {
+
+/* HAM XU LY -------------------------------------------------------------------------------------------------*/
+
+void Library::Insert(string type) {
+	if (type == "InsertFirst") {
+		system("cls");
+		Book x;
+		Color(10);
+		cout << "\n----------- Nhap thong tin sach -----------\n\n";
+		x.Input();
+		Node* p = ObjectToNode(x);
+		InsertFirst(p);
+		Color(9);
+		cout << "\n Them sach thanh cong\n ";
+		Color(15);
+		system("pause");
+		Color(15);
+	}
+	else if (type == "InsertLast") {
+		system("cls");
+		Book x;
+		Color(10);
+		cout << "\n----------- Nhap thong tin sach -----------\n\n";
+		x.Input();
+		Node* p = ObjectToNode(x);
+		InsertLast(p);
+		Color(9);
+		cout << "\n Them sach thanh cong\n ";
+		Color(15);
+		system("pause");
+		Color(15);
+	}
+	else if (type == "InsertAfter") {
+		system("cls");
+		unsigned int id;
+	gtInputID:
+		Color(14);
+		cout << "\n Nhap ID cua sach ban muon them vao phia sau: ";
+		cin >> id;
+		Node* q = GetNode(id);
+		if (!q) {
+			Color(12);
+			cout << " Khong tim thay sach. Vui long nhap lai !\n";
+			goto gtInputID;
+		}
+		Book x;
+		Color(10);
+		cout << "\n----------- Nhap thong tin sach -----------\n\n";
+		x.Input();
+		Node* p = ObjectToNode(x);
+		InsertAfter(p,q);
+		Color(9);
+		cout << "\n Them sach thanh cong\n\n ";
+		Color(15);
+		system("pause");
+		Color(15);
+	}
+	else return;
+}
+void Library::Save() {
+	ofstream fo;
+	fo.open("./Database/data.txt", ios::out); fo << "";
+	fo.close();
+	for (Node* p = l.pHead; p != NULL; p = p->pNext) {
+		p->Data.FileExport();
+	}
+	Color(9);
+	cout << "\n Luu file thanh cong\n ";
+	Color(15);
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* MENU ------------------------------------------------------------------------------------------------------*/
+
+/* SubMenu ----------------------------------*/
+
+// InsertMenu(4)
+void Library::InsertMenu() {
 	int choose;
+	bool isError = false;
 	do {
+		system("cls");
 		Color(180); cout << "\n     "; Color(6); cout << " ----------- Them sach -----------";
 		Color(180); cout << "\n     "; cout << "\n     "; Color(10); cout << " 1: Them vao dau danh sach";
 		Color(180); cout << "\n     "; Color(10); cout << " 2: Them vao cuoi danh sach";
 		Color(180); cout << "\n     "; Color(10); cout << " 3: Them vao sau 1 cuon sach";
-		Color(180); cout << "\n     "; Color(6); cout << " --------------------------------";
+		Color(180); cout << "\n     "; Color(10); cout << " 4: Quay lai";
+		Color(180); cout << "\n     "; cout << "\n     "; Color(6); cout << " ---------------------------------";
+		if (isError) {
+			Color(180); cout << "\n     "; cout << "\n     "; Color(12); cout << " Lua chon khong ton tai. Vui long nhap lai !";
+		}
 		Color(180); cout << "\n     "; cout << "\n     "; Color(7); cout << " Nhap vao lua chon cua ban: ";
 		cin >> choose;
 		Color(15);
 		switch (choose)
 		{
 		case 1:
-			// InsertFirst
+			Insert("InsertFirst");
 			break;
 		case 2:
-			// InsertLast
+			Insert("InsertLast");
 			break;
 		case 3:
-			// InsertAfter
+			Insert("InsertAfter");
 			break;
+		case 4:
+			Menu();
+			return;
 		default:
-			Color(12);
-			cout << "\nLua chon khong ton tai. Vui long nhap lai !\n";
-			Color(15);
+			isError = true;
 			break;
 		}
-	} while (true);
+	} while (choose != 4);
 }
-/*--------------------------------------------------------------------------------------------------------------*/
+
+void Library::ExitMenu() {
+	bool choose;
+	Color(14);
+	cout << "\n Ban co muon luu thay doi khong ? (Nhap 1 de luu, 0 de huy bo thay doi): ";
+	cin >> choose;
+	Color(15);
+	if (choose) {
+		Save();
+	}
+	exit(0);
+}
+/*-------------------------------------------*/
 
 
 
-/*--------------------------------------------------------------------------------------------------------------*/
-// Menu
+/* Main Menu --------------------------------*/
+
 void Library::Menu() {
 	int choose;
+	bool isError = false;
 	do {
+		system("cls");
 		Color(11);
 		cout << "\n----------- Menu -----------";
 		Color(10);
-		cout << "\n\n1: Xem danh sach";
-		cout << "\n2: Tim kiem sach";
-		cout << "\n3: Muon & Tra sach";
-		cout << "\n4: Them sach";
-		cout << "\n5: Chinh sua sach";
-		cout << "\n6: Xoa sach";
-		cout << "\n7: Thoat";
+		cout << "\n\n 1: Xem danh sach";
+		cout << "\n 2: Tim kiem sach";
+		cout << "\n 3: Muon & Tra sach";
+		cout << "\n 4: Them sach";
+		cout << "\n 5: Chinh sua sach";
+		cout << "\n 6: Xoa sach";
+		cout << "\n 7: Thoat";
 		Color(11);
 		cout << "\n\n----------------------------";
+		if (isError) {
+			Color(12);
+			cout << "\n\n Lua chon khong ton tai. Vui long nhap lai !";
+			Color(15);
+		}
 		Color(7);
-		cout << "\nNhap vao lua chon cua ban: ";
+		cout << "\n\n Nhap vao lua chon cua ban: ";
 		cin >> choose;
+
 		switch (choose)
 		{
 		case 1:
@@ -272,7 +390,7 @@ void Library::Menu() {
 			break;
 		case 4:
 			// Xem danh sach
-			Insert();
+			InsertMenu();
 			break;
 		case 5:
 			// Chinh sua
@@ -280,44 +398,16 @@ void Library::Menu() {
 		case 6:
 			// Xoa sach
 			break;
+		case 7:
+			ExitMenu();
+			break;
 		default:
-			Color(12);
-			cout << "\nLua chon khong ton tai. Vui long nhap lai !\n";
-			Color(15);
+			isError = true;
 			break;
 		}
 	} while (choose != 7);
 }
 
-//void Library::Menu() {
-//	int choose;
-//	do {
-//		Color(60);
-//		cout << "Mau 1 (Black)";
-//		Color(21);
-//		cout << "\nMau 2 (Green)";
-//		Color(22);
-//		cout << "\nMau 3 (Cyan)";
-//		Color(23);
-//		cout << "\nMau 4 (Red)";
-//		Color(24);
-//		cout << "\nMau 5 (Red)";
-//		Color(25);
-//		cout << "\nMau 6 (Magenta)";
-//		Color(26);
-//		cout << "\nMau 7 (Lightgray)";
-//		Color(27);
-//		cout << "\nMau 9 (Lightblue)";
-//		cin >> choose;
-//		if (choose == 1) {
-//			Insert();
-//		}
-//		else {
-//			Color(12);
-//			cout << "\nLua chon khong ton tai. Vui long nhap lai !\n";
-//			Color(15);
-//		}
-//	} while (choose != 4);
-//}
+/*-------------------------------------------*/
 
-/*--------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------*/
