@@ -1,5 +1,58 @@
 #include "Library.h"
 
+/* VALIDATE INPUT -----------------------------------------------------------------------------------------*/
+
+bool Library::isErrorChoose(string str, int start, int end, vector<string>& errMessages) {
+	errMessages.clear();
+	if (isNull(str)) {
+		errMessages.push_back("Lua chon khong duoc de trong. Vui long nhap lai !");
+		return true;
+	}
+	else if (!isInt(str)) {
+		errMessages.push_back("Lua chon chi duoc chua chu so. Vui long nhap lai !");
+		return true;
+	}
+	else {
+		int status = stoi(str);
+		if (status < start || status > end) {
+			string err = "Lua chon khong ton tai. Vui long nhap lua chon nam trong khoang (";
+			err.append(to_string(start));
+			err.append(",");
+			err.append(to_string(end));
+			err.append(")");
+			errMessages.push_back(err);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Library::isErrorSave(string str, vector<string>& errMessages) {
+	errMessages.clear();
+	if (isNull(str)) {
+		errMessages.push_back("Lua chon khong duoc de trong. Vui long nhap lai !");
+		return true;
+	}
+	else if (!isInt(str)) {
+		errMessages.push_back("Lua chon chi duoc chua chu so. Vui long nhap lai !");
+		return true;
+	}
+	else {
+		int status = stoi(str);
+
+		if (status < 0 || status > 1) {
+			errMessages.push_back("Lua chon khong hop le. Vui long nhap 1 de luu hoac nhap 0 de huy bo thay doi !");
+			return true;
+		}
+	}
+	return false;
+}
+
+/*---------------------------------------------------------------------------------------------------------*/
+
+
+
+
 
 /* IMPORT DU LIEU TU FILE ---------------------------------------------------------------------------------*/
 
@@ -297,8 +350,10 @@ void Library::Save() {
 
 // InsertMenu(4)
 void Library::InsertMenu() {
-	int choose;
+	int choose = 0;
 	bool isError = false;
+	string chooseStr;
+	vector<string> errMessages;
 	do {
 		system("cls");
 		Color(180); cout << "\n     "; Color(6); cout << " ----------- Them sach -----------";
@@ -308,10 +363,12 @@ void Library::InsertMenu() {
 		Color(180); cout << "\n     "; Color(10); cout << " 4: Quay lai";
 		Color(180); cout << "\n     "; cout << "\n     "; Color(6); cout << " ---------------------------------";
 		if (isError) {
-			Color(180); cout << "\n     "; cout << "\n     "; Color(12); cout << " Lua chon khong ton tai. Vui long nhap lai !";
+			Color(180); cout << "\n     "; cout << "\n     "; Color(12); cout << " " << errMessages[0];
 		}
 		Color(180); cout << "\n     "; cout << "\n     "; Color(7); cout << " Nhap vao lua chon cua ban: ";
-		cin >> choose;
+		getline(cin, chooseStr);
+		isError = isErrorChoose(chooseStr, 1, 4, errMessages);
+		if (!isError) choose = stoi(chooseStr);
 		Color(15);
 		switch (choose)
 		{
@@ -335,16 +392,31 @@ void Library::InsertMenu() {
 }
 
 void Library::ExitMenu() {
-	bool choose;
+	bool choose = 0;
+	string chooseStr;
+	bool isError = false;
+	vector <string> errMessages;
+gtSave:
 	Color(14);
 	cout << "\n Ban co muon luu thay doi khong ? (Nhap 1 de luu, 0 de huy bo thay doi): ";
-	cin >> choose;
-	Color(15);
+	getline(cin, chooseStr);
+	isError = isErrorSave(chooseStr, errMessages);
+	if (isError) {
+		Color(12);
+		cout << "\n " << errMessages[0] << endl;
+		Color(15);
+		goto gtSave;
+	}
+	else {
+		choose = stoi(chooseStr);
+	}
 	if (choose) {
 		Save();
 	}
+	Color(15);
 	exit(0);
 }
+
 /*-------------------------------------------*/
 
 
@@ -352,12 +424,14 @@ void Library::ExitMenu() {
 /* Main Menu --------------------------------*/
 
 void Library::Menu() {
-	int choose;
+	int choose = 0;
+	string chooseStr;
 	bool isError = false;
+	vector<string> errMessages;
 	do {
 		system("cls");
 		Color(11);
-		cout << "\n----------- Menu -----------";
+		cout << "\n ----------- Menu -----------";
 		Color(10);
 		cout << "\n\n 1: Xem danh sach";
 		cout << "\n 2: Tim kiem sach";
@@ -367,16 +441,17 @@ void Library::Menu() {
 		cout << "\n 6: Xoa sach";
 		cout << "\n 7: Thoat";
 		Color(11);
-		cout << "\n\n----------------------------";
+		cout << "\n\n ----------------------------";
 		if (isError) {
 			Color(12);
-			cout << "\n\n Lua chon khong ton tai. Vui long nhap lai !";
+			cout << "\n\n " << errMessages[0];
 			Color(15);
 		}
 		Color(7);
 		cout << "\n\n Nhap vao lua chon cua ban: ";
-		cin >> choose;
-
+		getline(cin, chooseStr);
+		isError = isErrorChoose(chooseStr, 1, 7, errMessages);
+		if (!isError) choose = stoi(chooseStr);
 		switch (choose)
 		{
 		case 1:

@@ -1,9 +1,12 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <windows.h>
 #include <iomanip>
+#include <vector>
+#include <ctime>
 
 using namespace std;
 
@@ -18,13 +21,24 @@ private:
 	bool status;
 public:
 
-	/* DOI MAU CONSOLE ---------------------------------------------------------------------------------------------*/
+	/* HAM THUA KE -------------------------------------------------------------------------------------------------*/
 
 	void Color(int);
+	bool isNull(string);
+	bool isInt(string);
+	bool isHumanName(string);
 
 	/*--------------------------------------------------------------------------------------------------------------*/
 
 
+
+	/* VALIDATE INPUT ----------------------------------------------------------------------------------------------*/
+	
+	bool isErrorID(string, vector<string> &);
+	bool isErrorBookName(string, vector<string> &);
+	bool isErrorHumanName(string, vector<string>&);
+	bool isErrorYear(string, vector<string> &);
+	bool isErrorStatus(string, vector<string> &);
 
 	/* KHOI TAO & GIAI PHONG CLASS ---------------------------------------------------------------------------------*/
 

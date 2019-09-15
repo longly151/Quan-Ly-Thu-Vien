@@ -1,12 +1,63 @@
 #include "Book.h"
 using namespace std;
 
-/* DOI MAU CONSOLE ---------------------------------------------------------------------------------------------*/
+/* HAM THUA KE -------------------------------------------------------------------------------------------------*/
 
+// Doi mau console
 void Book::Color(int k) {
 	HANDLE hConsoleColor;
 	hConsoleColor = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsoleColor, k);
+}
+
+// Kiem tra du lieu null
+bool Book::isNull(string str)
+{
+	if (str == "") return true;
+	int len = str.length();
+	int count = 0;
+	for (int i = 0; i < len; i++)
+	{
+		if (str[i] == ' ') count++;
+	}
+	if (count == len) return true;
+	return false;
+}
+
+// Kiem tra kieu so nguyen
+bool Book::isInt(string str) 
+{
+	int len = str.length();
+	for (int i = 0; i < len; i++)
+	{
+		if (i == 0)
+		{
+			if ((str[i] < '0' || str[i] > '9') && (str[i] != '-')) return false;
+			if (str[i] == '-') {
+				if (len <= 1) return false;
+				else {
+					if (str[i + 1] < '0' || str[i + 1] > '9') return false;
+				}
+			}
+		}
+		else
+		{
+			if (str[i] < '0' || str[i] > '9') return false;
+		}
+
+	}
+	return true;
+}
+
+// Kiem tra ten 
+bool Book::isHumanName(string str)
+{
+	int len = str.length();
+	for (int i = 0; i < len; i++)
+	{
+		if (((str[i] < 'A') || (str[i] > 'Z' && str[i] < 'a') || (str[i] > 'z')) && (str[i] != '.') && (str[i] != ' ')) return false;
+	}
+	return true;
 }
 
 /*--------------------------------------------------------------------------------------------------------------*/
@@ -17,21 +68,97 @@ void Book::Color(int k) {
 
 /* VALIDATE INPUT ----------------------------------------------------------------------------------------------*/
 
-bool checkID(unsigned int id) {
-	if (id == 0) return false;
-	return true;
+bool Book::isErrorID(string str,vector<string> &errMessages) {
+	errMessages.clear();
+	if (isNull(str)) {
+		errMessages.push_back("ID khong duoc de trong. Vui long nhap lai !");
+		return true;
+	}
+	else if (!isInt(str)) {
+		errMessages.push_back("ID chi duoc chua chu so. Vui long nhap lai !");
+		return true;
+	}
+	else {
+		int id = stoi(str);
+		if (id <= 0) {
+			errMessages.push_back("ID phai la so tu nhien lon hon 0. Vui long nhap lai !");
+			return true;
+		}
+	}
+	return false;
 }
-bool checkName(string name) {
-	if (name == "0") return false;
-	return true;
+
+bool Book::isErrorBookName(string str, vector<string>& errMessages) {
+	errMessages.clear();
+	if (isNull(str)) {
+		errMessages.push_back("Ten sach khong duoc de trong. Vui long nhap lai !");
+		return true;
+	}
+	return false;
 }
-bool checkYear(int year) {
-	if (year == 0) return false;
-	return true;
+
+bool Book::isErrorHumanName(string str, vector<string>& errMessages) {
+	errMessages.clear();
+	if (isNull(str)) {
+		errMessages.push_back("Ten khong duoc de trong. Vui long nhap lai !");
+		return true;
+	}
+	else if (!isHumanName(str)) {
+		errMessages.push_back("Ten chi duoc chua chu cai, ky tu '.' va dau cach. Vui long nhap lai !");
+		return true;
+	}
+	return false;
 }
-bool checkStatus(int status) {
-	/*if (status == 0) return false;*/
-	return true;
+
+bool Book::isErrorYear(string str, vector<string>& errMessages) {
+	errMessages.clear();
+	if (isNull(str)) {
+		errMessages.push_back("Nam xuat ban khong duoc de trong. Vui long nhap lai !");
+		return true;
+	}
+	else if (!isInt(str)) {
+		errMessages.push_back("Nam xuat ban chi duoc chua chu so. Vui long nhap lai !");
+		return true;
+	}
+	else {
+		int year = stoi(str);
+		time_t now = time(0);
+		tm* ltm = localtime(&now);
+		int currentYear = 1900 + ltm->tm_year;
+		if (year <= 0) {
+			errMessages.push_back("Nam xuat ban phai lon hon 0. Vui long nhap lai !");
+			return true;
+		}
+		if (year > currentYear) {
+			string err = "Nam xuat ban phai nho hon hoac bang nam hien tai (";
+			err.append(to_string(currentYear));
+			err.append("). Vui long nhap lai !");
+			errMessages.push_back(err);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Book::isErrorStatus(string str, vector<string>& errMessages) {
+	errMessages.clear();
+	if (isNull(str)) {
+		errMessages.push_back("Trang thai sach khong duoc de trong. Vui long nhap lai !");
+		return true;
+	}
+	else if (!isInt(str)) {
+		errMessages.push_back("Trang thai sach chi duoc chua chu so. Vui long nhap lai !");
+		return true;
+	}
+	else {
+		int status = stoi(str);
+
+		if (status < 0 || status > 1) {
+			errMessages.push_back("Trang thai sach khong hop le. Vui long nhap 0 neu sach chua duoc muon hoac nhap 1 neu sach da duoc muon !");
+			return true;
+		}
+	}
+	return false;
 }
 
 /*--------------------------------------------------------------------------------------------------------------*/
@@ -82,61 +209,74 @@ Book::~Book(void) {
 /* HAM XU LY ----------------------------------------------------------------------------------------------------*/
 
 void Book::Input() {
-
+	string idStr;
+	string yearStr;
+	string statusStr;
+	vector<string> errMessages;
+	cin.ignore();
 gtID:
 	Color(11);
 	cout << " Nhap ID: ";
-	cin >> id;
-	Color(12);
-	if (!checkID(id)) {
-		cout << " ID sach chi duoc chua chu so. Vui long nhap lai !\n";
+	getline(cin, idStr);
+	if (isErrorID(idStr,errMessages)) {
+		Color(12);
+		cout << " " << errMessages[0] << endl;
 		goto gtID;
 	}
-	cin.ignore();
+	else {
+		id = stoi(idStr);
+	}
 gtName:
 	Color(11);
 	cout << " Nhap ten sach: ";
 	getline(cin, name);
-	Color(12);
-	if (!checkName(name)) {
-		cout << " Ten sach khong hop le. Vui long nhap lai !\n";
+	if (isErrorBookName(name, errMessages)) {
+		Color(12);
+		cout << " " << errMessages[0] << endl;
 		goto gtName;
 	}
 gtAuthor:
 	Color(11);
 	cout << " Nhap ten tac gia: ";
 	getline(cin, author);
-	Color(12);
-	if (!checkName(author)) {
-		cout << " Ten tac gia khong hop le. Vui long nhap lai !\n";
+	if (isErrorHumanName(author, errMessages)) {
+		Color(12);
+		cout << " " << errMessages[0] << endl;
 		goto gtAuthor;
 	}
 gtPublisher:
 	Color(11);
 	cout << " Nhap ten nha xuat ban: ";
 	getline(cin, publisher);
-	Color(12);
-	if (!checkName(publisher)) {
-		cout << " Ten nha xuat ban khong hop le. Vui long nhap lai !\n";
+	if (isErrorHumanName(publisher, errMessages)) {
+		Color(12);
+		cout << " " << errMessages[0] << endl;
 		goto gtPublisher;
 	}
 gtYear:
 	Color(11);
 	cout << " Nhap nam phat hanh: ";
-	cin >> year;
-	Color(12);
-	if (!checkYear(year)) {
-		cout << " Nam phat hanh khong hop le. Vui long nhap lai !\n";
+	getline(cin, yearStr);
+	if (isErrorYear(yearStr, errMessages)) {
+		Color(12);
+		cout << " " << errMessages[0] << endl;
 		goto gtYear;
 	}
+	else {
+		year = stoi(yearStr);
+	}
+	Color(12);
 gtStatus:
 	Color(11);
 	cout << " Nhap tinh trang sach (Nhap 1 neu sach da duoc muon, 0 neu sach chua duoc muon): ";
-	cin >> status;
-	Color(12);
-	if (!checkStatus(status)) {
-		cout << " Tinh trang sach khong hop le. Vui long nhap lai !\n";
+	getline(cin, statusStr);
+	if (isErrorStatus(statusStr, errMessages)) {
+		Color(12);
+		cout << " " << errMessages[0] << endl;
 		goto gtStatus;
+	}
+	else {
+		year = bool(stoi(statusStr));
 	}
 	Color(15);
 }
