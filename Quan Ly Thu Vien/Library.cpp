@@ -302,10 +302,18 @@ void Library::Insert(string type) {
 	else if (type == "InsertAfter") {
 		system("cls");
 		unsigned int id;
+		string idStr;
+		vector <string> errMessages;
 	gtInputID:
 		Color(14);
-		cout << "\n Nhap ID cua sach ban muon them vao phia sau: ";
-		cin >> id;
+		cout << "\n Nhap ID cua sach ban muon them vao phia sau: "; Color(15);
+		getline(cin, idStr);
+		if (isErrorID(idStr,errMessages)) {
+			Color(12);
+			cout << " " << errMessages[0] << endl;
+			goto gtInputID;
+		}
+		else id = stoi(idStr);
 		Node* q = GetNode(id);
 		if (!q) {
 			Color(12);
@@ -314,7 +322,7 @@ void Library::Insert(string type) {
 		}
 		Book x;
 		Color(10);
-		cout << "\n----------- Nhap thong tin sach -----------\n\n";
+		cout << "\n ----------- Nhap thong tin sach -----------\n\n";
 		x.Input();
 		Node* p = ObjectToNode(x);
 		InsertAfter(p,q);
@@ -326,10 +334,14 @@ void Library::Insert(string type) {
 	}
 	else return;
 }
+
 void Library::Save() {
+	// Xoa du lieu co trong file
 	ofstream fo;
 	fo.open("./Database/data.txt", ios::out); fo << "";
 	fo.close();
+
+	// Ghi du lieu moi
 	for (Node* p = l.pHead; p != NULL; p = p->pNext) {
 		p->Data.FileExport();
 	}
@@ -403,7 +415,7 @@ gtSave:
 	isError = isErrorSave(chooseStr, errMessages);
 	if (isError) {
 		Color(12);
-		cout << "\n " << errMessages[0] << endl;
+		cout << " " << errMessages[0] << endl;
 		Color(15);
 		goto gtSave;
 	}

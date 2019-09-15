@@ -213,7 +213,6 @@ void Book::Input() {
 	string yearStr;
 	string statusStr;
 	vector<string> errMessages;
-	cin.ignore();
 gtID:
 	Color(11);
 	cout << " Nhap ID: ";
